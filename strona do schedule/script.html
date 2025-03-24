@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zegar z Automatycznym Przekierowaniem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: black;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            position: relative;
+        }
+        #clock {
+            font-size: 3em;
+            font-weight: bold;
+            margin-top: 20px;
+            z-index: 10;
+        }
+        
+        /* Animacja płatków róż */
+        .petal {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background-color: red;
+            border-radius: 50% 70% 50% 70%;
+            opacity: 0.8;
+            top: -10vh;
+            animation: fall linear infinite, sway ease-in-out infinite;
+        }
+        
+        @keyframes fall {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) translateX(calc(-30px + 60px * var(--random-x)));
+                opacity: 0;
+            }
+        }
+        
+        @keyframes sway {
+            0% { transform: rotate(0deg) translateX(0px); }
+            50% { transform: rotate(15deg) translateX(10px); }
+            100% { transform: rotate(-15deg) translateX(-10px); }
+        }
+    </style>
+</head>
+<body>
+    <h1>Aktualny czas</h1>
+    <div id="clock"></div>
+    
+    <script>
+        function updateClock() {
+            let now = new Date();
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            let seconds = now.getSeconds();
+            
+            let timeString = hours.toString().padStart(2, '0') + ":" +
+                             minutes.toString().padStart(2, '0') + ":" +
+                             seconds.toString().padStart(2, '0');
+            
+            document.getElementById("clock").innerText = timeString;
+            
+            if (hours === 22 && minutes === 0 && seconds === 0) {
+                window.location.href = "https://twój-link.com";
+            }
+        }
+        
+        setInterval(updateClock, 1000);
+        updateClock();
+        
+        function createPetal() {
+            let petal = document.createElement("div");
+            petal.classList.add("petal");
+            petal.style.left = Math.random() * 100 + "vw";
+            petal.style.setProperty("--random-x", Math.random());
+            petal.style.animationDuration = (Math.random() * 5 + 3) + "s, " + (Math.random() * 3 + 2) + "s";
+            petal.style.animationDelay = Math.random() * 2 + "s";
+            petal.style.backgroundColor = Math.random() > 0.5 ? "red" : "white";
+            document.body.appendChild(petal);
+            
+            setTimeout(() => {
+                petal.remove();
+            }, 10000);
+        }
+        
+        setInterval(createPetal, 300);
+    </script>
+</body>
+</html>
+<link rel="stylesheet" href="style.css">
